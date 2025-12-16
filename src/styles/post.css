@@ -544,15 +544,24 @@
 }
 
 /* Video */
-.prose iframe {
-  width: 100%;
-  aspect-ratio: 16/9;
-  border: none;
-  border-radius: 6px;
-  margin: 0.25em 0 0 0;
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 35px;
+    height: 0;
+    overflow: hidden;
 }
 
 /* Spotify */
 .prose iframe[src*='spotify.com'] {
   aspect-ratio: auto;
+}
+
+/* YouTube */
+.video-container iframe {
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }

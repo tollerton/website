@@ -1,16 +1,346 @@
 ---
-import IndexLayout from '@/layouts/IndexLayout.astro'
-import About from '@/components/widgets/About.astro'
-import PostList from '@/components/widgets/PostList.astro'
-import { themeConfig } from '@/config'
-import { getSortedFilteredPosts } from '@/utils/draft'
+import '../styles/global.css'
 
-const posts = await getSortedFilteredPosts()
+const bio =
+  'Designer at Google with 18+ years experience in creating, prototyping and shipping polished experiences for Android, iOS and the Web.'
+
+const socials = [
+  { name: 'Instagram', href: 'https://instagram.com/tollerton', icon: 'instagram' },
+  { name: 'LinkedIn', href: 'https://linkedin.com/in/tollerton', icon: 'linkedin' },
+  { name: 'SoundCloud', href: 'https://soundcloud.com/tollerton', icon: 'soundcloud' },
+  { name: 'Threads', href: 'https://threads.net/@tollerton', icon: 'threads' },
+  { name: 'YouTube', href: 'https://youtube.com/@tollerton', icon: 'youtube' }
+]
 ---
 
-<IndexLayout title={themeConfig.site.title} description={themeConfig.site.description}>
-  <About />
-  <main>
-    <PostList posts={posts} />
-  </main>
-</IndexLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shaun Tollerton</title>
+    <meta name="description" content={bio} />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0e0e" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf9f7" />
+    <meta property="og:title" content="Shaun Tollerton" />
+    <meta property="og:description" content={bio} />
+    <meta property="og:image" content="https://tollerton.design/assets/showreel-poster.webp" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      href="/fonts/google-sans-flex-700-wdth128-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/google-sans-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <main>
+      <div class="card">
+        <header class="bio">
+          <div class="identity">
+            <picture class="avatar">
+              <source srcset="/assets/avatar-static.webp" media="(prefers-reduced-motion: reduce)" />
+              <img src="/assets/avatar.webp" alt="" width="48" height="48" />
+            </picture>
+            <h1>Shaun Tollerton</h1>
+          </div>
+          <p>{bio}</p>
+        </header>
+        <footer class="footer">
+          <nav class="social" aria-label="Social links">
+            {
+              socials.map(({ name, href, icon }) => (
+                <a href={href} aria-label={name} rel="me noopener" target="_blank">
+                  <span class={`icon icon-${icon}`} />
+                </a>
+              ))
+            }
+          </nav>
+          <p class="email">heytollerton@gmail.com</p>
+        </footer>
+      </div>
+      <div class="reel">
+        <video
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="/assets/showreel-poster.webp"
+          aria-label="Highlights from Shaun's design career"
+        >
+          <source src="/assets/showreel.webm" type="video/webm" />
+          <source src="/assets/showreel.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </main>
+
+    <script is:inline>
+      // Respect reduced motion: show the poster instead of the moving reel.
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const video = document.querySelector('video')
+        video.removeAttribute('autoplay')
+        video.pause()
+        video.currentTime = 0
+      }
+    </script>
+
+    <style>
+      /* Mobile (base): vertical stack, video negotiates the middle ---------- */
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        height: 100dvh;
+        padding: 16px 8px;
+      }
+
+      .card {
+        display: contents;
+      }
+
+      .bio {
+        order: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding-inline: 24px;
+        width: 100%;
+      }
+
+      .identity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .avatar img {
+        display: block;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      h1 {
+        font-family: 'Google Sans Flex', 'Google Sans', system-ui, sans-serif;
+        font-weight: 700;
+        font-stretch: 128%;
+        font-size: 17px;
+        line-height: 22px;
+        text-align: center;
+      }
+
+      .bio p {
+        font-size: 12px;
+        line-height: 16px;
+        text-align: center;
+      }
+
+      .reel {
+        order: 2;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      /* Height-driven sizing: as wide as the height allows, capped at 16:9. */
+      .reel video {
+        height: 100%;
+        max-width: 100%;
+        border-radius: 24px;
+        object-fit: cover;
+        background: var(--surfacecontainer);
+      }
+
+      .footer {
+        order: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-inline: 16px;
+        width: 100%;
+      }
+
+      .social {
+        display: flex;
+        gap: 4px;
+        height: 48px;
+        width: 100%;
+      }
+
+      .social a {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surfacecontainer);
+        border-radius: 8px;
+        transition: background 150ms ease;
+      }
+
+      .social a:first-child {
+        border-radius: 24px 8px 8px 24px;
+        padding-left: 4px;
+      }
+
+      .social a:last-child {
+        border-radius: 8px 24px 24px 8px;
+        padding-right: 4px;
+      }
+
+      .social a:hover,
+      .social a:active {
+        background: var(--hover);
+      }
+
+      .icon {
+        display: block;
+        background: var(--onsurface);
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: contain;
+        -webkit-mask-position: center;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-size: contain;
+      }
+
+      .icon-instagram {
+        width: 18px;
+        height: 18px;
+        mask-image: url('/assets/icon-instagram.svg');
+        -webkit-mask-image: url('/assets/icon-instagram.svg');
+      }
+
+      .icon-linkedin {
+        width: 18px;
+        height: 18px;
+        mask-image: url('/assets/icon-linkedin.svg');
+        -webkit-mask-image: url('/assets/icon-linkedin.svg');
+      }
+
+      .icon-soundcloud {
+        width: 24px;
+        height: 24px;
+        mask-image: url('/assets/icon-soundcloud.svg');
+        -webkit-mask-image: url('/assets/icon-soundcloud.svg');
+      }
+
+      .icon-threads {
+        width: 16px;
+        height: 18px;
+        mask-image: url('/assets/icon-threads.svg');
+        -webkit-mask-image: url('/assets/icon-threads.svg');
+      }
+
+      .icon-youtube {
+        width: 20px;
+        height: 20px;
+        mask-image: url('/assets/icon-youtube.svg');
+        -webkit-mask-image: url('/assets/icon-youtube.svg');
+      }
+
+      .email {
+        display: block;
+        font-size: 12px;
+        line-height: 16px;
+        text-align: center;
+        width: 100%;
+      }
+
+      /* Tablet: same stack, wider breathing room ---------------------------- */
+
+      @media (min-width: 600px) {
+        .bio,
+        .footer {
+          padding-inline: 128px;
+        }
+      }
+
+      /* Desktop: horizontal, bordered card + 4:3 reel ------------------------ */
+
+      @media (min-width: 1024px) {
+        main {
+          flex-direction: row;
+          justify-content: center;
+          gap: 24px;
+          padding: 24px;
+        }
+
+        .card {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          flex-shrink: 0;
+          width: 330px;
+          height: min(560px, 100%);
+          padding: 24px;
+          border: 2px solid var(--surfacecontainer);
+          border-radius: 40px;
+        }
+
+        .bio {
+          flex: 1;
+          justify-content: center;
+          gap: 16px;
+          padding-inline: 0;
+        }
+
+        h1 {
+          font-size: 34px;
+          line-height: 41px;
+          letter-spacing: 0.4px;
+        }
+
+        .bio p {
+          font-size: 15px;
+          line-height: 20px;
+          letter-spacing: -0.23px;
+        }
+
+        .reel {
+          order: 0;
+          flex: 1;
+          min-width: 0;
+          height: 100%;
+          align-items: center;
+        }
+
+        /* Largest 4:3 box that fits both the flexed width and page height. */
+        .reel video {
+          aspect-ratio: 4 / 3;
+          height: auto;
+          width: min(100%, calc((100dvh - 48px) * 4 / 3));
+          max-height: 100%;
+          border-radius: 40px;
+        }
+
+        .footer {
+          gap: 24px;
+          padding-inline: 0;
+        }
+
+        .email {
+          font-size: 15px;
+          line-height: 16px;
+        }
+      }
+    </style>
+  </body>
+</html>
